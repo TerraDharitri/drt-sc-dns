@@ -1,0 +1,9 @@
+[package]
+name = "test-gen"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+
+[dependencies]
+sha3 = "0.9.1"
+hex = "0.4"

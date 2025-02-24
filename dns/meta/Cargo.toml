@@ -1,0 +1,11 @@
+[package]
+name = "dns-meta"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+publish = false
+[dependencies.dns]
+path = ".."
+
+[dependencies.dharitri-sc-meta]
+version = "1.0.3"

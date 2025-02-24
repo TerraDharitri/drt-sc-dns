@@ -1,0 +1,22 @@
+[package]
+name = "dns-wasm"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+[dependencies.dns]
+path = ".."
+
+[dependencies.dharitri-sc-wasm-adapter]
+version = "1.0.1"
+
+[workspace]
+members = ["."]
