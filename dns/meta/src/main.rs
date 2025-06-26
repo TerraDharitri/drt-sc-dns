@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<numbat_wasm_sc_dns::AbiProvider>();
+    dharitri_sc_meta::cli_main::<dns::AbiProvider>();
 }

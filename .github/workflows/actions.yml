@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  contracts:
+    name: Contracts
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.0.1
+    with:
+      rust-toolchain: nightly-2022-12-08
+      vmtools-version: v1.4.60
+      install-libtinfo5: true
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
