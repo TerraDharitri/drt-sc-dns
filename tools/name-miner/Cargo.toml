@@ -2,9 +2,8 @@
 name = "test-gen"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2021"
+edition = "2018"
 
 [dependencies]
 sha3 = "0.9.1"
 hex = "0.4"
-

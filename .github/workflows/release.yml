@@ -6,8 +6,8 @@ on:
 env:
   # https://github.com/actions/runner/issues/863 ($HOME is overridden for containers)
   NUMBAT_HOME: /home/numbat
-  REPO_PATH: /home/numbat/drt-sc-dns
-  REPO_URL: https://github.com/TerraDharitri/drt-sc-dns.git
+  REPO_PATH: /home/numbat/rs-sc-dns
+  REPO_URL: https://github.com/TerraDharitri/drt-rs-sc-dns.git
 
 jobs:
   build:

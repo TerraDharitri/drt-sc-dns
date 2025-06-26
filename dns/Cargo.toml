@@ -1,33 +1,25 @@
 [package]
-name = "dns"
+name = "numbat-wasm-sc-dns"
 version = "1.1.0"
-edition = "2021"
+edition = "2018"
+
 authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/TerraDharitri/drt-rs-sc-dns"
 homepage = "https://dharitri.org/"
 documentation = "https://docs.dharitri.org/"
-description = "Dharitri Domain Name Service smart contract"
-keywords = ["dharitri", "wasm", "webassembly", "blockchain", "contract"]
+description = "Numbat Domain Name Service smart contract"
+keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
-[dependencies.dharitri-sc-modules]       #teja789
-version = "1.0.14"
+[dependencies.numbat-wasm-modules]
+version = "0.0.17"
 
-[dependencies.dharitri-sc]
-version = "1.0.14"
+[dependencies.numbat-wasm]
+version = "0.0.17"
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "1.0.14"
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.17"                           #teja789
 
 
-
-# [dependencies.dharitri-sc]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/base"
-
-# [dependencies.dharitri-sc-scenario]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/scenario"
-
-# [dependencies.dharitri-sc-modules]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/contracts/modules"
