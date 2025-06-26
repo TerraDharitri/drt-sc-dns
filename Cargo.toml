@@ -1,0 +1,6 @@
+[workspace]
+members = [
+  "dns",
+  "dns/meta",
+  "tools/name-miner",
+]

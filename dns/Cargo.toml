@@ -1,0 +1,25 @@
+[package]
+name = "numbat-wasm-sc-dns"
+version = "1.1.0"
+edition = "2018"
+
+authors = ["contact@dharitri.org"]
+license = "GPL-3.0-only"
+readme = "README.md"
+repository = "https://github.com/TerraDharitri/drt-rs-sc-dns"
+homepage = "https://dharitri.org/"
+documentation = "https://docs.dharitri.org/"
+description = "Numbat Domain Name Service smart contract"
+keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
+categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
+
+[dependencies.numbat-wasm-modules]
+version = "0.0.17"
+
+[dependencies.numbat-wasm]
+version = "0.0.17"
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.17"                           #teja789
+
+

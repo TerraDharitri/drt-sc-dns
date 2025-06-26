@@ -1,0 +1,17 @@
+[package]
+name = "numbat-wasm-sc-dns-abi"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[dependencies.numbat-wasm-sc-dns]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.17"                             #teja789
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.17"
+
+

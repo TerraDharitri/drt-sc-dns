@@ -1,0 +1,28 @@
+
+[package]
+name = "dns-fuzz"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+publish = false
+edition = "2018"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.3"
+numbat-wasm = "0.0.17"          #teja789
+numbat-wasm-debug = "0.0.17"    #teja789
+
+[dependencies.dns]
+path = ".."
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "fuzz_value_state"
+path = "fuzz_targets/fuzz_value_state.rs"
+test = false
+doc = false
