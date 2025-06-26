@@ -1,28 +1,32 @@
+[[bin]]
+name = "fuzz_value_state"
+path = "fuzz_targets/fuzz_value_state.rs"
+test = false
+doc = false
 
 [package]
 name = "dns-fuzz"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
 publish = false
-edition = "2018"
+edition = "2021"
 
 [package.metadata]
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = "0.3"
-numbat-wasm = "0.0.17"          #teja789
-numbat-wasm-debug = "0.0.17"    #teja789
+libfuzzer-sys = "0.3.0"
+dharitri-sc = "1.0.14"                     
+dharitri-sc-scenario = "1.0.14"            
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/base"
+
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/scenario"
 
 [dependencies.dns]
 path = ".."
 
-# Prevent this from interfering with workspaces
 [workspace]
 members = ["."]
-
-[[bin]]
-name = "fuzz_value_state"
-path = "fuzz_targets/fuzz_value_state.rs"
-test = false
-doc = false

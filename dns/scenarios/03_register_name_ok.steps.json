@@ -19,15 +19,17 @@
                 "value": "0",
                 "function": "nameHash",
                 "arguments": [
-                    "str:coolname0001.numbat"
+                    "str:coolname0001.x"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "keccak256:str:coolname0001.numbat" ],
+                "out": [
+                    "keccak256:str:coolname0001.numbat"
+                ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -41,15 +43,17 @@
                 "value": "0",
                 "function": "nameShard",
                 "arguments": [
-                    "str:coolname0001.numbat"
+                    "str:coolname0001.x"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "0x87" ],
+                "out": [
+                    "0xaf"
+                ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -59,17 +63,17 @@
             "txId": "register-coolname0001",
             "tx": {
                 "from": "address:cool_address",
-                "to": "sc:dns#87",
+                "to": "sc:dns#af",
                 "value": "123,000",
                 "function": "register",
                 "arguments": [
-                    "str:coolname0001.numbat"
+                    "str:coolname0001.x"
                 ],
                 "gasLimit": "40,000,000",
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [],   
+                "out": [],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -78,10 +82,34 @@
         },
         {
             "step": "scCall",
-            "txId": "resolve-coolname0001",
+            "txId": "resolve-coolname0001-x-ok",
             "tx": {
                 "from": "address:viewer",
-                "to": "sc:dns#87",
+                "to": "sc:dns#af",
+                "value": "0",
+                "function": "resolve",
+                "arguments": [
+                    "str:coolname0001.x"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "address:cool_address"
+                ],
+                "status": "",
+                "logs": [],
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "resolve-coolname0001-numbat-err",
+            "tx": {
+                "from": "address:viewer",
+                "to": "sc:dns#af",
                 "value": "0",
                 "function": "resolve",
                 "arguments": [
@@ -91,7 +119,7 @@
                 "gasPrice": "0"
             },
             "expect": {
-                "out": [ "address:cool_address" ],
+                "out": [],
                 "status": "",
                 "logs": [],
                 "gas": "*",
@@ -104,17 +132,17 @@
                 "address:cool_address": {
                     "nonce": "*",
                     "balance": "123,000",
-                    "username": "str:coolname0001.numbat"
+                    "username": "str:coolname0001.x"
                 },
-                "sc:dns#87": {
+                "sc:dns#af": {
                     "nonce": "*",
                     "balance": "123,000",
                     "storage": {
                         "''registration_cost": "123,000",
                         "''feat:register": "1",
-                        "''value_state|keccak256:str:coolname0001.numbat": "u8:2|address:cool_address"
+                        "''value_state|keccak256:str:coolname0001.numbat": "u8:5|address:cool_address"
                     },
-                    "code": "file:../output/numbat-wasm-sc-dns.wasm"
+                    "code": "file:../output/dns.wasm"
                 },
                 "+": ""
             }

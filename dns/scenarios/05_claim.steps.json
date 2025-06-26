@@ -6,7 +6,7 @@
             "txId": "claim",
             "tx": {
                 "from": "address:dns_owner",
-                "to": "sc:dns#87",
+                "to": "sc:dns#af",
                 "value": "0",
                 "function": "claim",
                 "arguments": [],
@@ -16,7 +16,18 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": [
+                    {
+                        "address": "*",
+                        "endpoint": "str:transferValueOnly",
+                        "topics": [
+                            "sc:dns#af",
+                            "address:dns_owner",
+                            "123,000"
+                        ],
+                        "data": ""
+                    }
+                ],
                 "gas": "*",
                 "refund": "*"
             }
@@ -31,11 +42,11 @@
                     "code": "",
                     "asyncCallData": "str:dns claim"
                 },
-                "sc:dns#87": {
+                "sc:dns#af": {
                     "nonce": "*",
                     "balance": "0",
                     "storage": "*",
-                    "code": "file:../output/numbat-wasm-sc-dns.wasm"
+                    "code": "file:../output/dns.wasm"
                 },
                 "+": ""
             }
