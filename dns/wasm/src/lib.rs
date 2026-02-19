@@ -10,11 +10,13 @@
 // Total number of exported functions:  20
 
 #![no_std]
-#![no_main]
 #![feature(alloc_error_handler, lang_items)]
 
-// dharitri_sc_wasm_adapter::allocator!();
-// dharitri_sc_wasm_adapter::panic_handler!();
+#[cfg(feature = "no-std")]
+dharitri_sc_wasm_adapter::allocator!();
+
+#[cfg(feature = "no-std")]
+dharitri_sc_wasm_adapter::panic_handler!();
 
 dharitri_sc_wasm_adapter::endpoints! {
     dns

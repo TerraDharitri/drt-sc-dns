@@ -14,13 +14,15 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 
 [dependencies.dharitri-sc-modules]       #teja789
 version = "1.0.14"
+default-features = false
 
 [dependencies.dharitri-sc]
 version = "1.0.14"
+default-features = false
 
 [dev-dependencies.dharitri-sc-scenario]
 version = "1.0.14"
-
+default-features = false
 
 
 # [dependencies.dharitri-sc]
