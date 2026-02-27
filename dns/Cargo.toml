@@ -13,29 +13,6 @@ description = "Numbat Domain Name Service smart contract"
 keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
-<<<<<<< Updated upstream
-[dependencies.dharitri-sc-modules]       #teja789
-version = "1.0.14"
-default-features = false
-
-[dependencies.dharitri-sc]
-version = "1.0.14"
-default-features = false
-
-[dev-dependencies.dharitri-sc-scenario]
-version = "1.0.14"
-default-features = false
-
-
-# [dependencies.dharitri-sc]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/base"
-
-# [dependencies.dharitri-sc-scenario]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/scenario"
-
-# [dependencies.dharitri-sc-modules]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/contracts/modules"
-=======
 [dependencies]
 numbat-wasm = "0.0.18"
 
@@ -48,4 +25,3 @@ version = "0.0.18"
 [dependencies.getrandom]
 version = "0.2.17"
 features = ["js"]
->>>>>>> Stashed changes
