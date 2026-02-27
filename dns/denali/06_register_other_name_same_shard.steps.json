@@ -1,0 +1,29 @@
+{
+    "name": "register, other name same shard",
+    "steps": [
+        {
+            "step": "scCall",
+            "txId": "try-register-coolname1075-same-shard",
+            "comment": "This should fail because coolname1075.numbat doesn't hash to the same shard (0x87) as the contract",
+            "tx": {
+                "from": "address:cool_address",
+                "to": "sc:dns#87",
+                "value": "123,000",
+                "function": "register",
+                "arguments": [
+                    "str:coolname1075.numbat"
+                ],
+                "gasLimit": "10,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:name belongs to another shard",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        }
+    ]
+}

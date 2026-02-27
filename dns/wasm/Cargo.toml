@@ -1,6 +1,7 @@
 [package]
-name = "dns-wasm"
+name = "numbat-wasm-sc-dns-wasm"
 version = "0.0.0"
+<<<<<<< Updated upstream
 authors = ["contact@dharitri.org"]
 edition = "2021"
 
@@ -8,9 +9,14 @@ edition = "2021"
 default = []
 wasm32-support = ["getrandom/js"]
 no_std = []
+=======
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
+>>>>>>> Stashed changes
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
+
 [profile.release]
 codegen-units = 1
 opt-level = "z"
@@ -18,22 +24,22 @@ lto = true
 debug = false
 panic = "abort"
 
-[dependencies]
-once_cell = "1.18.0"
-num-bigint = { version = "0.4.0", default-features = false}
-getrandom = { version = "0.2.7",features = ["js"]}
-
-
-[dependencies.dns]
+[dependencies.numbat-wasm-sc-dns]
 path = ".."
 
+<<<<<<< Updated upstream
 [dependencies.dharitri-sc-wasm-adapter]
 version = "1.0.14"   
 default-features = false                     
+=======
+[dependencies.numbat-wasm-node]
+version = "0.0.18"
+>>>>>>> Stashed changes
 
-# [dependencies.dharitri-sc-wasm-adapter]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/wasm-adapter"
-# default-features = false
+[dependencies.numbat-wasm-output]
+version = "0.0.18"
+features = ["wasm-output-mode"]
 
+# Prevent this from interfering with workspaces
 [workspace]
 members = ["."]

@@ -1,14 +1,15 @@
 [package]
-name = "dns-meta"
+name = "numbat-wasm-sc-dns-abi"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
 publish = false
-[dependencies.dns]
+
+[dependencies]
+numbat-wasm = "0.0.18"
+
+[dependencies.numbat-wasm-sc-dns]
 path = ".."
 
-[dependencies.dharitri-sc-meta] 
-version = "1.0.14"
-
-# [dependencies.dharitri-sc-meta]
-# path = "/home/dugong/Desktop/teja-work/my_rust-works/rs-sdks/drt-rs-sdk-0.39.5/framework/meta"
+[dependencies.numbat-wasm-debug]
+version = "0.0.18"

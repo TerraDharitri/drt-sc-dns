@@ -1,13 +1,14 @@
 #![no_std]
+#![allow(clippy::string_lit_as_bytes)]
+#![allow(clippy::ptr_arg)]
 
 pub mod name_validation;
 pub mod user_builtin;
 pub mod value_state;
 
-use name_validation::SuffixType;
-use value_state::ValueState;
+use value_state::*;
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 type NameHash<M> = ManagedByteArray<M, 32>;
 
@@ -21,14 +22,14 @@ fn sibling_id(addr_bytes: &[u8; 32]) -> u8 {
     addr_bytes[31]
 }
 
-#[dharitri_sc::contract]
-pub trait Dns: dharitri_sc_modules::features::FeaturesModule {
+#[numbat_wasm::derive::contract]
+pub trait Dns: numbat_wasm_modules::features::FeaturesModule {
     #[proxy]
     fn user_builtin_proxy(&self, to: ManagedAddress) -> user_builtin::Proxy<Self::Api>;
 
     #[init]
     fn init(&self, registration_cost: &BigUint) {
-        self.registration_cost().set(registration_cost);
+        self.set_registration_cost(registration_cost);
     }
 
     fn validate_name_shard(&self, name_hash: &NameHash<Self::Api>) {
@@ -40,18 +41,14 @@ pub trait Dns: dharitri_sc_modules::features::FeaturesModule {
 
     /// `name_hash` is redundant, but passed to the method so we don't compute it twice.
     fn validate_register_input(&self, name: &ManagedBuffer, name_hash: &NameHash<Self::Api>) {
-        self.check_register_feature_on();
+        self.check_feature_on(b"register", true);
 
         self.validate_name(name);
 
         self.validate_name_shard(name_hash);
 
-        let vs = self.value_state(name_hash).get();
+        let vs = self.get_value_state(name_hash);
         require!(vs.is_available(), "name already taken");
-    }
-
-    fn check_register_feature_on(&self) {
-        self.check_feature_on(b"register", true);
     }
 
     #[view(canRegister)]
@@ -68,107 +65,88 @@ pub trait Dns: dharitri_sc_modules::features::FeaturesModule {
         self.validate_register_input(&name, &name_hash);
 
         require!(
-            payment == self.registration_cost().get(),
+            payment == self.get_registration_cost(),
             "should pay exactly the registration cost"
         );
 
         let address = self.blockchain().get_caller();
-        self.value_state(&name_hash)
-            .set(&ValueState::PendingX(address.clone()));
+        self.set_value_state(&name_hash, &ValueState::Pending(address.clone()));
 
-        let gas_limit = self.update_gas_limit().get();
         self.user_builtin_proxy(address)
             .set_user_name(&name)
-            .with_gas_limit(gas_limit)
             .async_call()
-            .with_callback(self.callbacks().update_value_state_callback(&name_hash))
+            .with_callback(self.callbacks().set_user_name_callback(&name_hash))
             .call_and_exit()
     }
 
-    #[endpoint]
-    fn migrate(&self, name: ManagedBuffer) {
-        let name_with_x_suffix = name_validation::prepare_and_validate_name_for_migration(&name)
-            .unwrap_or_else(|err| sc_panic!(err));
-
-        self.check_register_feature_on();
-
-        let name_hash = self.unchecked_name_hash(&name);
-
-        self.validate_name_shard(&name_hash);
-
-        let address = self.value_state(&name_hash).update(|vs| {
-            let address = vs.start_migration();
-
-            let caller = self.blockchain().get_caller();
-            require!(caller == address, "name not owned by the caller");
-            address
-        });
-
-        let gas_limit = self.update_gas_limit().get();
-        self.user_builtin_proxy(address)
-            .migrate_user_name(&name_with_x_suffix)
-            .with_gas_limit(gas_limit)
-            .async_call()
-            .with_callback(self.callbacks().update_value_state_callback(&name_hash))
-            .call_and_exit();
-    }
-
     #[callback]
-    fn update_value_state_callback(
+    fn set_user_name_callback(
         &self,
         cb_name_hash: &NameHash<Self::Api>,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
-        self.value_state(cb_name_hash).update(|vs| {
-            if result.is_ok() {
-                vs.finalize();
-            } else {
-                vs.revert();
+        match result {
+            ManagedAsyncCallResult::Ok(()) => {
+                // commit
+                let vm = self.get_value_state(cb_name_hash);
+                if let ValueState::Pending(addr) = vm {
+                    self.set_value_state(cb_name_hash, &ValueState::Committed(addr));
+                } else {
+                    self.set_value_state(cb_name_hash, &ValueState::None);
+                }
             }
-        });
+            ManagedAsyncCallResult::Err(_) => {
+                // revert
+                self.set_value_state(cb_name_hash, &ValueState::None);
+            }
+        }
     }
 
     #[view]
     fn resolve(&self, name: &ManagedBuffer) -> OptionalValue<ManagedAddress> {
-        let (name_hash, computed_suffix_type) = self.compute_name_hash_and_classify(name);
+        let name_hash = self.name_hash(name);
         self.resolve_from_hash(name_hash)
-            .into_option()
-            .and_then(|address_suffix_multi_value| {
-                let (address, stored_suffix_type) = address_suffix_multi_value.into_tuple();
-                if computed_suffix_type == stored_suffix_type {
-                    Some(address)
-                } else {
-                    None
-                }
-            })
-            .into()
     }
 
     #[view(resolveFromHash)]
-    fn resolve_from_hash(
-        &self,
-        name_hash: NameHash<Self::Api>,
-    ) -> OptionalValue<MultiValue2<ManagedAddress, SuffixType>> {
+    fn resolve_from_hash(&self, name_hash: NameHash<Self::Api>) -> OptionalValue<ManagedAddress> {
         if sibling_id(&name_hash.to_byte_array()) != self.get_own_sibling_id() {
             return OptionalValue::None;
         }
 
-        let vs = self.value_state(&name_hash).get();
-        match vs {
-            ValueState::RegisteredX(address) => {
-                OptionalValue::Some((address, SuffixType::X).into())
-            }
-            ValueState::RegisteredNumbat(address) => {
-                OptionalValue::Some((address, SuffixType::Numbat).into())
-            }
-            _ => OptionalValue::None,
+        let vs = self.get_value_state(&name_hash);
+        if let ValueState::Committed(address) = vs {
+            OptionalValue::Some(address)
+        } else {
+            OptionalValue::None
         }
     }
 
-    #[view(getNameValueState)]
-    fn get_name_value_state(&self, name: &ManagedBuffer) -> ValueState<Self::Api> {
+    #[view(checkPending)]
+    fn check_pending(&self, name: &ManagedBuffer) -> OptionalValue<ManagedAddress> {
         let name_hash = self.name_hash(name);
-        self.value_state(&name_hash).get()
+        if sibling_id(&name_hash.to_byte_array()) != self.get_own_sibling_id() {
+            return OptionalValue::None;
+        }
+
+        let vs = self.get_value_state(&name_hash);
+        if let ValueState::Pending(address) = vs {
+            OptionalValue::Some(address)
+        } else {
+            OptionalValue::None
+        }
+    }
+
+    #[only_owner]
+    #[view(resetPending)]
+    fn reset_pending(&self, name: &ManagedBuffer) {
+        let name_hash = self.name_hash(name);
+        self.validate_name_shard(&name_hash);
+
+        let vs = self.get_value_state(&name_hash);
+        if let ValueState::Pending(_) = vs {
+            self.set_value_state(&name_hash, &ValueState::None);
+        }
     }
 
     #[only_owner]
@@ -182,28 +160,20 @@ pub trait Dns: dharitri_sc_modules::features::FeaturesModule {
         );
     }
 
-    #[only_owner]
-    #[endpoint(setUpdateGasLimit)]
-    fn set_update_gas_limit(&self, gas_limit: u64) {
-        self.update_gas_limit().set(gas_limit);
-    }
-
     // STORAGE
 
     #[view(getRegistrationCost)]
-    #[storage_mapper("registration_cost")]
-    fn registration_cost(&self) -> SingleValueMapper<BigUint>;
+    #[storage_get("registration_cost")]
+    fn get_registration_cost(&self) -> BigUint;
 
-    #[view(getValueState)]
-    #[storage_mapper("value_state")]
-    fn value_state(
-        &self,
-        name_hash: &NameHash<Self::Api>,
-    ) -> SingleValueMapper<ValueState<Self::Api>>;
+    #[storage_set("registration_cost")]
+    fn set_registration_cost(&self, registration_cost: &BigUint);
 
-    #[view(getUpdateGasLimit)]
-    #[storage_mapper("update_gas_limit")]
-    fn update_gas_limit(&self) -> SingleValueMapper<u64>;
+    #[storage_get("value_state")]
+    fn get_value_state(&self, name_hash: &NameHash<Self::Api>) -> ValueState<Self::Api>;
+
+    #[storage_set("value_state")]
+    fn set_value_state(&self, name_hash: &NameHash<Self::Api>, value_state: &ValueState<Self::Api>);
 
     // UTILS
 
@@ -220,21 +190,6 @@ pub trait Dns: dharitri_sc_modules::features::FeaturesModule {
 
     #[view(nameHash)]
     fn name_hash(&self, name: &ManagedBuffer) -> NameHash<Self::Api> {
-        let (name_hash, _) = self.compute_name_hash_and_classify(name);
-        name_hash
-    }
-
-    fn compute_name_hash_and_classify(
-        &self,
-        name: &ManagedBuffer,
-    ) -> (NameHash<Self::Api>, SuffixType) {
-        let (prepared_name, suffix_type) =
-            name_validation::prepare_name_for_hash_and_classify(name);
-        let name_hash = self.unchecked_name_hash(&prepared_name);
-        (name_hash, suffix_type)
-    }
-
-    fn unchecked_name_hash(&self, name: &ManagedBuffer) -> NameHash<Self::Api> {
         self.crypto().keccak256(name)
     }
 
