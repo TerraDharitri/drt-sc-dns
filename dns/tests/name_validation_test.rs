@@ -22,7 +22,7 @@ fn test_validate_name() {
     assert!(validate_name("aa.numbat").is_err());
 
     // lowercase only
-    assert!(!validate_name("Aaaaaaaaaa.numbat").is_ok());
+    assert!(validate_name("Aaaaaaaaaa.numbat").is_err());
 
     // no other chars
     assert!(validate_name("Aaaaa.aaaa.numbat").is_err());
