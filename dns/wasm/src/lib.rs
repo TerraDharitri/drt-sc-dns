@@ -10,22 +10,9 @@
 // Total number of exported functions:  17
 
 #![no_std]
-<<<<<<< Updated upstream
-#![feature(alloc_error_handler, lang_items)]
-
-#[cfg(feature = "no-std")]
-dharitri_sc_wasm_adapter::allocator!();
-
-#[cfg(feature = "no-std")]
-dharitri_sc_wasm_adapter::panic_handler!();
-
-dharitri_sc_wasm_adapter::endpoints! {
-    dns
-=======
 
 numbat_wasm_node::wasm_endpoints! {
     numbat_wasm_sc_dns
->>>>>>> Stashed changes
     (
         canRegister
         register
