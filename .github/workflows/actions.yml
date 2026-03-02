@@ -13,10 +13,10 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.0.1
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v1.0.3
     with:
-      rust-toolchain: nightly-2022-12-08
-      vmtools-version: v1.4.60
-      install-libtinfo5: true
+      rust-toolchain: nightly-2023-05-30
+      vmtools-version: v1.4.53
+      extra-build-args: --ignore-eei-checks
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}

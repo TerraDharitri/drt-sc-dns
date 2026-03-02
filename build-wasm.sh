@@ -1,24 +1,15 @@
-# #!/bin/sh
-
-# sc-meta all build
-
-
 #!/bin/sh
 
-# until we have the new version of erdpy
+# drtpy --verbose contract build dns
 
-cd dns/wasm
-RUSTFLAGS='-C link-arg=-s' \
-cargo build --target=wasm32-unknown-unknown --release 
-cd ..
-mkdir -p output
-cp wasm/target/wasm32-unknown-unknown/release/dns_wasm.wasm output/dns.wasm
-cd ..
+CONTRACT_PATH="dns"
 
-# cd user-mock/wasm
-# RUSTFLAGS='-C link-arg=-s' \
-# cargo build --target=wasm32-unknown-unknown --release --locked
-# cd ..
-# mkdir -p output
-# cp wasm/target/wasm32-unknown-unknown/release/user_mock_wasm.wasm output/user-mock.wasm
-# cd ..
+CONTRACT_NAME="numbat-wasm-sc-dns"
+
+rm -f ${CONTRACT_PATH}/output/${CONTRACT_NAME}.wasm
+rm -f ${CONTRACT_PATH}/output/${CONTRACT_NAME}.abi.json
+rm -f ${CONTRACT_PATH}/output/${CONTRACT_NAME}.imports.json
+
+
+cd ${CONTRACT_PATH}/meta
+cargo run build

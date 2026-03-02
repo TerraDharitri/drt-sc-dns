@@ -4,3 +4,4 @@ members = [
   "dns/meta",
   "tools/name-miner",
 ]
+resolver = "2"

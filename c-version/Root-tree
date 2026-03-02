@@ -1,0 +1,42 @@
+import os
+import sys
+
+EXCLUDE_DIRS = {
+    ".git",
+    "__pycache__",
+    "target",
+    "node_modules",
+    ".idea",
+    ".vscode",
+}
+
+def print_tree(path, prefix=""):
+    try:
+        entries = sorted(os.listdir(path))
+    except PermissionError:
+        return
+
+    entries = [
+        e for e in entries
+        if e not in EXCLUDE_DIRS
+    ]
+
+    for index, entry in enumerate(entries):
+        full_path = os.path.join(path, entry)
+        connector = "└── " if index == len(entries) - 1 else "├── "
+        print(prefix + connector + entry)
+
+        if os.path.isdir(full_path):
+            extension = "    " if index == len(entries) - 1 else "│   "
+            print_tree(full_path, prefix + extension)
+
+
+def main():
+    root = sys.argv[1] if len(sys.argv) > 1 else "."
+    print(root)
+    print_tree(root)
+
+
+if __name__ == "__main__":
+    main()
+
